@@ -9,12 +9,8 @@ def find_json_snippets(data):
     # naive syntax processor
     data = data.split("```json")
 
-    result = []
-    for chunk in data[1:]:
-        result.append(chunk.split("```")[0])
-
     # here, result holds only jsons.
-    return result
+    return [chunk.split("```")[0] for chunk in data[1:]]
 
 def _annotate_error(exception, data, snippet):
 
@@ -23,8 +19,7 @@ def _annotate_error(exception, data, snippet):
     index = data.index(snippet)
 
     lineno = data[:index].count("\n")
-    return ("A decode error ({}) was found around line {}"
-            "").format(exception.msg, lineno + exception.lineno)
+    return f"A decode error ({exception.msg}) was found around line {lineno + exception.lineno}"
 
 def verify_inline_json(filename="in-toto-spec.md"):
 

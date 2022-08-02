@@ -87,17 +87,13 @@ def _beautify(obj, **kw):
     if len(obj) > kw["max_str_len"]:
       obj = obj[:kw["max_str_len"] - 3] + "..."
 
-  # Truncate list and recurse into _beautify for each item
   elif isinstance(obj, list):
     if len(obj) > kw["max_list_len"]:
       obj = obj[:kw["max_list_len"] - 1] + ["..."]
 
-    tmp_obj = []
-    for item in obj:
-      tmp_obj.append(_beautify(item, **kw))
+    tmp_obj = [_beautify(item, **kw) for item in obj]
     obj = tmp_obj
 
-  # Truncate dict and recurse into _beautify for each item
   elif isinstance(obj, dict):
     dict_keys = list(obj.keys())
 
@@ -171,8 +167,7 @@ def create_markdown_summary(folder):
 
   links_str = ""
   for step in layout["signed"]["steps"]:
-    link_paths = glob.glob(os.path.join(folder,
-        "{}.*.link".format(step["name"])))
+    link_paths = glob.glob(os.path.join(folder, f'{step["name"]}.*.link'))
 
     for link_path in link_paths:
       link_name = os.path.basename(link_path)
@@ -191,7 +186,7 @@ def create_markdown_summary(folder):
       layout_str=layout_str,
       links_str=links_str)
 
-  output_filename = "{}.md".format(project_name)
+  output_filename = f"{project_name}.md"
   with open(output_filename, "w") as fp:
     fp.write(result)
 
